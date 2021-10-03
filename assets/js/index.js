@@ -22,20 +22,13 @@ const startVideo = () => {
 
 //api de redes neurais
 Promise.all([
-    //square
-    faceapi.nets.tinyFaceDetector.loadFromUri('/assets/lib/face-api/models'),
-    //traços
-    faceapi.nets.faceLandmark68Net.loadFromUri('/assets/lib/face-api/models'),
-    //reconhecimento
-    faceapi.nets.faceRecognitionNet.loadFromUri('/assets/lib/face-api/models'),
-    //expressoes faciais
-    faceapi.nets.faceExpressionNet.loadFromUri('/assets/lib/face-api/models'),
-    //idade
-    faceapi.nets.ageGenderNet.loadFromUri('/assets/lib/face-api/models'),
-    //usada internamente pra desenhar
-    faceapi.nets.ssdMobilenetv1.loadFromUri('/assets/lib/face-api/models'),
+    faceapi.nets.tinyFaceDetector.loadFromUri('/assets/lib/face-api/models'),//square
+    faceapi.nets.faceLandmark68Net.loadFromUri('/assets/lib/face-api/models'),//traços
+    faceapi.nets.faceRecognitionNet.loadFromUri('/assets/lib/face-api/models'),//reconhecimento
+    faceapi.nets.faceExpressionNet.loadFromUri('/assets/lib/face-api/models'),//expressoes faciais
+    faceapi.nets.ageGenderNet.loadFromUri('/assets/lib/face-api/models'),//idade
+    faceapi.nets.ssdMobilenetv1.loadFromUri('/assets/lib/face-api/models'),//usada internamente pra desenhar
 ]).then(startVideo)
-
 
 cam.addEventListener('play', async () => {
     const canvas = faceapi.createCanvasFromMedia(cam)
