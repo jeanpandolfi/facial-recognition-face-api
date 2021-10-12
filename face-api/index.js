@@ -19,14 +19,48 @@ app.get('/', (request, response) => {
     response.send({ statusServer: "Server UP"});
 })
 
-app.post('/save', async (request, response) => {
+app.post('/face', async (request, response) => {
     try {
         const personFace = request.body;
         await PersonFace.create(personFace);
         return response.status(201).send({message: `Sucessfull saving PersonFace ${personFace.name}`});
     } catch (error) {
-        response.status(400).send({message: `Erro saving PersonFace ${personFace.name}`});
+        response.status(400).send({message: `Error saving PersonFace ${personFace.name}`});
     }
 });
 
+app.get('/face', async  (request, response) => {
+    try {
+        const persons = await PersonFace.find();
+        response.status(200).send(persons);
+    } catch (error) {
+        response.status(400).send({message: `Error get all persons`});
+    }
+} );
 
+app.get('/face/:id', async  (request, response) => {
+    try {
+        const id = request.params.id;
+
+        // const person = await PersonFace.findById(id);
+        const person = await PersonFace.findOne({_id: id});
+        if(!person){
+            return response.status(422).send({message: `Face Not Found ${id}`});
+        }
+        response.status(200).send(person);
+    } catch (error) {
+        response.status(400).send({message: `Error get PersonFace ${id}`});
+    }
+} );
+
+app.put('/face/:id', async  (request, response) => {
+    try {
+        const id = request.params.id;
+        const personFace = request.body;
+        
+        await PersonFace.updateOne({_id: id}, personFace);
+        response.status(200).send({message: 'Update Sucessfull'});
+    } catch (error) {
+        response.status(400).send({message: `Error get PersonFace ${id}`});
+    }
+} );
