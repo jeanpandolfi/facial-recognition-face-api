@@ -22,11 +22,11 @@ const startVideo = () => {
 }
 
 const loadLabels = () => {
-    const labels = ['Douglas Braga']
+    const labels = ['Douglas Braga', 'Jean Pandolfi']
     return Promise.all(labels.map(async label => {
         const descriptions = []
         for (let i = 1; i <= 5; i++) {
-            const img = await faceapi.fetchImage(`/assets/lib/face-api/labels/${i}.jpg`)
+            const img = await faceapi.fetchImage(`/assets/lib/face-api/labels/${label}/${i}.jpg`)
             const detections = await faceapi
                 .detectSingleFace(img)
                 .withFaceLandmarks()
@@ -55,9 +55,10 @@ cam.addEventListener('play', async () => {
         height: cam.height
     }
     const labels = await loadLabels()
-
+    console.log(labels);
     faceapi.matchDimensions(canvas, canvasSize)
     document.body.appendChild(canvas)
+
     setInterval(async () => {
         const detections = await faceapi
             .detectAllFaces(
@@ -80,6 +81,7 @@ cam.addEventListener('play', async () => {
         faceapi.draw.drawDetections(canvas, resizedDetections)
         faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
         faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
+
         resizedDetections.forEach(detection => {
             const { age, gender, genderProbability } = detection
             new faceapi.draw.DrawTextField([
