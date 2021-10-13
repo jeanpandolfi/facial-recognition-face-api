@@ -64,3 +64,23 @@ app.put('/face/:id', async  (request, response) => {
         response.status(400).send({message: `Error get PersonFace ${id}`});
     }
 } );
+
+app.post('/face-all', async (request, response) => {
+    try {
+        const personFaces = request.body;
+        console.log('Body Recebido: ', personFaces)
+        await PersonFace.create(personFaces);
+        response.status(201).send({message: `Sucessfull saving all PersonFaces. Number faces: ${personFaces.length}`});
+    } catch (error) {
+        response.status(400).send({message: `Error saving PersonFace ${personFace.name}`});
+    }
+});
+
+app.get('/face-all', async  (request, response) => {
+    try {
+        const persons = await PersonFace.find();
+        response.status(200).send(persons);
+    } catch (error) {
+        response.status(400).send({message: `Error get all persons`});
+    }
+} );

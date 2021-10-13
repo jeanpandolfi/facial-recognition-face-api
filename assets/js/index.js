@@ -45,8 +45,21 @@ Promise.all([
     faceapi.nets.faceExpressionNet.loadFromUri('/assets/lib/face-api/models'), //expressoes faciais
     faceapi.nets.ageGenderNet.loadFromUri('/assets/lib/face-api/models'), //idade
     faceapi.nets.ssdMobilenetv1.loadFromUri('/assets/lib/face-api/models'), //usada internamente pra desenhar
-]).then(startVideo)
+]).then(() => {
+    // startVideo();
+    loadLabels().then((result => {
+        const labels = result.map(label => {
+            return {name: label.label, descriptors: label.descriptors}
+        })
+        save(labels)
+        .then(result => console.log(result))
 
+    }))
+})
+
+// Promise.all([
+//     loadLabels()
+// ]).then((result) => console.log(result))
 
 cam.addEventListener('play', async () => {
     const canvas = faceapi.createCanvasFromMedia(cam)
@@ -55,7 +68,7 @@ cam.addEventListener('play', async () => {
         height: cam.height
     }
     const labels = await loadLabels()
-    console.log(labels);
+    
     faceapi.matchDimensions(canvas, canvasSize)
     document.body.appendChild(canvas)
 
@@ -99,3 +112,31 @@ cam.addEventListener('play', async () => {
         })
     }, 100)
 })
+
+async function saveAllFaces(personFaces) {
+    console.log('Body Enviado: ', personFaces)
+    const response = await fetch(`http://localhost:3000/face-all`, {
+        method: 'POST',
+          body: JSON.stringify(personFaces),
+          mode: 'no-cors'
+    })
+    return response;
+}
+
+async function getAllFaces() {
+    const response = await fetch('http://localhost:3000/face-all')
+    return response.json();
+}
+
+async function save(faces) {
+    
+    return await fetch('http://localhost:8080/face', {
+        method: 'POST',
+        body: { nome: "Jean Pandolfi", idade: 22},
+        headers: {
+          'Content-type': 'application/json',
+        },
+        mode: 'no-cors'
+      })
+    
+}
